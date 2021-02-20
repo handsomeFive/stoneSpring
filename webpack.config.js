@@ -1,47 +1,61 @@
-const path = require("path")
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
-  entry: "./src/index.tsx",
+  entry: './src/index.tsx',
   output: {
-    filename: "[name].bundle.js",
-    chunkFilename: "[name].bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
-    resolve: {
-      extensions: ['.js', '.ts', '.tsx'],
-      alias: {
-        "@": path.resolve("src"),
-        "@img": path.join(__dirname, "src/assets/img"),
-        "@components": path.join(__dirname, "src/components"),
-      },
+    extensions: ['.js', '.ts', '.tsx'],
+    alias: {
+      '@': path.resolve('src'),
+      '@img': path.join(__dirname, 'src/assets/img'),
+      '@components': path.join(__dirname, 'src/components'),
     },
   },
   module: {
     rules: [
       {
         test: /\.(j|t)sx?$/,
-        loader: "babel-loader",
-        include: path.resolve(__dirname, "src"),
+        loader: 'babel-loader',
+        include: path.resolve(__dirname, 'src'),
         exclude: /node_modules/,
       },
       {
-        test: /\.(sa|c)ss$/,
-        include: path.resolve(__dirname, "src"), // 只让loader解析我们src底下自己写的文件
-        use: ["style-loader", "css-loader", "sass-loader"],
+        test: /\.(sc|c)ss$/,
+        include: path.resolve(__dirname, 'src'), // 只让loader解析我们src底下自己写的文件
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+            },
+          },
+          'sass-loader',
+          {
+            loader: 'px2rem-loader',
+            options: {
+              remUnit: 50,
+              remPrecision: 8,
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         use: [
           {
-            loader: "url-loader",
+            loader: 'url-loader',
             options: {
               //1024 == 1kb
               //小于10kb时打包成base64编码的图片否则单独打包成图片
               limit: 10240,
-              name: path.resolve(__dirname, "/dist/img/[name].[hash:7].[ext]"),
+              name: path.resolve(__dirname, '/dist/img/[name].[hash:7].[ext]'),
             },
           },
         ],
@@ -50,10 +64,10 @@ const config = {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         use: [
           {
-            loader: "url-loader",
+            loader: 'url-loader',
             options: {
               limit: 10240,
-              name: path.resolve(__dirname, "/dist/font/[name].[hash:7].[ext]"),
+              name: path.resolve(__dirname, '/dist/font/[name].[hash:7].[ext]'),
             },
           },
         ],
@@ -62,19 +76,19 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "./public/index.html",
+      filename: 'index.html',
+      template: './public/index.html',
       inject: true,
     }),
   ],
   optimization: {
     minimizer: [new UglifyJsPlugin()],
   },
-}
+};
 
 module.exports = function (env, argv) {
-  if (argv.mode === "development") {
-    config.devtool = "source-map"
+  if (argv.mode === 'development') {
+    config.devtool = 'source-map';
     config.devServer = {
       port: 3000,
       historyApiFallback: true,
@@ -84,7 +98,7 @@ module.exports = function (env, argv) {
       },
       inline: true,
       hot: true,
-    }
+    };
   }
-  return config
-}
+  return config;
+};

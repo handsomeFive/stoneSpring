@@ -1,4 +1,5 @@
-import React from "react"
-import ReactDom from "react-dom"
+import React from 'react';
+import ReactDom from 'react-dom';
+import Home from '@/pages/Home';
 
-ReactDom.render(<div>Hello React!</div>, document.getElementById("root"))
+ReactDom.render(<Home></Home>, document.getElementById('root'));
