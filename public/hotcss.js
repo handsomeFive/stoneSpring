@@ -44,7 +44,6 @@
       document.documentElement.setAttribute('design-width', designWidth);
     }
     hotcss.designWidth = designWidth; // 保证px2rem 和 rem2px 不传第二个参数时, 获取hotcss.designWidth是undefined导致的NaN
-  
   })();
 
   hotcss.mresize = function () {
