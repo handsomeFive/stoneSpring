@@ -1,6 +1,7 @@
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyConfig = require('copy-webpack-plugin');
 
 function getConfig(mode) {
   return {
@@ -59,7 +60,7 @@ function getConfig(mode) {
                 publicPath: './',
                 name:
                   mode === 'production'
-                    ? 'dist/img/[name].[hash:7].[ext]'
+                    ? 'img/[name].[hash:7].[ext]'
                     : 'src/assets/img/[name].[hash:7].[ext]',
               },
             },
@@ -88,6 +89,7 @@ function getConfig(mode) {
         template: './public/index.html',
         inject: true,
       }),
+      new CopyConfig({ patterns: [{ from: 'public', to: '' }] }),
     ],
     optimization: {
       minimizer: [new UglifyJsPlugin()],
