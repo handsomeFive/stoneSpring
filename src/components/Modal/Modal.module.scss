@@ -1,0 +1,30 @@
+.modalWrapper {
+  display: none;
+  &.open {
+    display: block;
+  }
+
+  .modalMask {
+    position: absolute;
+    background: rgba(#000000, 0.4);
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+  }
+  .modalContent {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+  .archor_top {
+    background-color: #fff;
+  }
+  .archor_center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .archor_bottom {
+    background-color: #fff;
+  }
+}

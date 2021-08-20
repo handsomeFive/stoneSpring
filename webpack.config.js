@@ -1,10 +1,13 @@
 const path = require('path');
+const { HotModuleReplacementPlugin } = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyConfig = require('copy-webpack-plugin');
 
 function getConfig(mode) {
   return {
+    target: 'web', // 这是webpack5的bug
     entry: './src/index.tsx',
     output: {
       filename: '[name].bundle.js',
@@ -35,10 +38,15 @@ function getConfig(mode) {
             {
               loader: 'css-loader',
               options: {
-                modules: true,
+                modules: {
+                  auto: /\.module.(sc|c)ss?$/, // 仅使用module.scss或者module.css
+                  localIdentName:
+                    mode === 'production'
+                      ? '[hash:base64]'
+                      : '[name]_[local]_[hash:base64:5]',
+                },
               },
             },
-            'sass-loader',
             {
               loader: 'px2rem-loader',
               options: {
@@ -46,6 +54,7 @@ function getConfig(mode) {
                 remPrecision: 8,
               },
             },
+            'sass-loader',
           ],
         },
         {
@@ -84,12 +93,14 @@ function getConfig(mode) {
       ],
     },
     plugins: [
+      new CopyConfig({ patterns: [{ from: './public/js', to: './js' }] }), // copy js
+      new CleanWebpackPlugin(),
+      new HotModuleReplacementPlugin(),
       new HtmlWebpackPlugin({
         filename: 'index.html',
         template: './public/index.html',
         inject: true,
       }),
-      new CopyConfig({ patterns: [{ from: 'public', to: '' }] }),
     ],
     optimization: {
       minimizer: [new UglifyJsPlugin()],
@@ -102,14 +113,15 @@ module.exports = function (env, argv) {
   if (argv.mode === 'development') {
     config.devtool = 'source-map';
     config.devServer = {
-      port: 3000,
+      hot: true,
+      open: true,
+      port: 9000,
+      liveReload: true,
       historyApiFallback: true,
       overlay: {
         //当出现编译器错误或警告时，就在网页上显示一层黑色的背景层和错误信息
         errors: true,
       },
-      inline: true,
-      hot: true,
     };
   }
   return config;

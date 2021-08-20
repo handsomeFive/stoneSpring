@@ -1,0 +1,10 @@
+#root {
+  position: relative;
+  z-index: 100;
+}
+.__modal__ {
+  position: absolute;
+  z-index: 10000;
+  top: 0;
+  left: 0;
+}

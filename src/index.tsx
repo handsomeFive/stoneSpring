@@ -2,4 +2,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import Home from '@/pages/Home';
 
-ReactDom.render(<Home></Home>, document.getElementById('root'));
+import './assets/css/global.css';
+import './assets/css/reset.css';
+
+ReactDom.render(<Home />, document.getElementById('root'));
